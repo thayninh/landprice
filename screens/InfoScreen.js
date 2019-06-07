@@ -9,30 +9,21 @@ export default class InfoScreen extends React.Component {
     render() {
       return (
         <ScrollView style={styles.container}>
-        <Card title="Phòng trực ban thiên tai 24/24" titleStyle={styles.cardTitle}>
+        <Card title="CHỦ NHIỆM ĐỀ TÀI" titleStyle={styles.cardTitle}>
           <View>
-            <Text style={[styles.cardHomeText, styles.cardText]}>Tỉnh Lào Cai</Text>
-            <Text style={[styles.cardText]}>Tỉnh Lào Cai, Việt Nam</Text>
-            <Text style={[styles.cardText]}>(+84-xx) xxxxxxx</Text>
-            <Text style={[styles.cardText]}>contact@laocai.vn</Text>
+            <Text style={[styles.cardHomeText, styles.cardText]}>Bùi Thị Cẩm Ngọc</Text>
+            <Text style={[styles.cardText]}>Khoa Quản lý Đất đai - Trường Đại học Tài nguyên và Môi Trường - Hà Nội</Text>
+            <Text style={[styles.cardText]}>0989094148</Text>
+            <Text style={[styles.cardText]}>ngocbc83@gmail.com</Text>
           </View>
         </Card>
 
-        <Card title="Tổng cục phòng chống thiên tai" titleStyle={styles.cardTitle}>
+        <Card title="ĐƠN VỊ THỰC HIỆN" titleStyle={styles.cardTitle}>
           <View>
-            <Text style={[styles.cardHomeText, styles.cardText]}>Phòng 105, tầng 28</Text>
-            <Text style={[styles.cardText]}>Toà nhà Sông Đà, Phạm Hùng, Hà Nội</Text>
-            <Text style={[styles.cardText]}>(+84-24) 62538352</Text>
-            <Text style={[styles.cardText]}>contact@laocai.vn</Text>
-          </View>
-        </Card>
-
-        <Card title="Ban ứng phó thiên tai khẩn cấp" titleStyle={styles.cardTitle}>
-          <View>
-            <Text style={[styles.cardHomeText, styles.cardText]}>Phòng 208, tầng 4</Text>
-            <Text style={[styles.cardText]}>Tòa nhà hành chính, số 8 đường Phạm Ngũ Lão</Text>
-            <Text style={[styles.cardText]}>(+84-94) 3672345</Text>
-            <Text style={[styles.cardText]}>contact@laocai.org</Text>
+            <Text style={[styles.cardHomeText, styles.cardText]}>Nguyễn Xuân Linh</Text>
+            <Text style={[styles.cardText]}>Khoa Địa lý - Trường Đại học Khoa học Tự nhiên - ĐHQGHN</Text>
+            <Text style={[styles.cardText]}>0986937886</Text>
+            <Text style={[styles.cardText]}>thayninh@gmail.com</Text>
           </View>
         </Card>
       </ScrollView>
