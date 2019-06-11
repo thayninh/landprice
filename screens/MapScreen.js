@@ -3,7 +3,6 @@ import { StyleSheet, View, Text, Alert, TextInput, ScrollView, KeyboardAvoidingV
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { Overlay, Button, Divider } from 'react-native-elements';
 
-
 var defaultRegion = {
   latitude: 21,
   longitude: 105.8,
@@ -11,7 +10,7 @@ var defaultRegion = {
   longitudeDelta: 1
 }
 var TSTDColor = "#FF0101"
-var TSSSColor = "#0A0AFF"
+var TSSSColor = "#0FFA07"
 
 export default class MapScreen extends React.Component {
   static navigationOptions = {
@@ -23,8 +22,11 @@ export default class MapScreen extends React.Component {
     this.state = {
       region: defaultRegion,
       tstd_id: 0,
+      tsss_id: 0,
       TSTDMarker: null,
+      TSSSMarker: [],
       TSTDCurPosition: null,
+      TSSSCurPosition: null,
 
       TSTDInputValuesArea: null,
       TSTDInputValuesLocation: null,
@@ -35,12 +37,16 @@ export default class MapScreen extends React.Component {
 
       TSTDOverlayVisible: false,
     };
-    this.TSTDValuesObject = {}
+
+    this.TSTDValuesObject = {};
+    this.tsssmarkers = [];
 
     this.createTSTD = this.createTSTD.bind(this);
     this.TSTDOnPress = this.TSTDOnPress.bind(this);
     this.SaveTSTDOnPress = this.SaveTSTDOnPress.bind(this);
     this.CancelTSTDOnPress = this.CancelTSTDOnPress.bind(this);
+
+    this.createTSSS = this.createTSSS.bind(this);
   }
 
   componentDidMount() {
@@ -85,6 +91,32 @@ export default class MapScreen extends React.Component {
       }
     });
   }
+ 
+  createTSSS() {
+    navigator.geolocation.getCurrentPosition(position => {
+      if (position) {
+        this.setState({
+          TSSSCurPosition: { latitude: position.coords.latitude, longitude: position.coords.longitude },
+        });
+        this.tsssmarkers.push(
+          <MapView.Marker draggable
+            key={this.state.tsss_id}
+            onPress={this.TSSSOnPress}
+            coordinate={this.state.TSSSCurPosition}
+            pinColor={TSSSColor}>
+            {/* onDragEnd={(e) => this.setState({ x: e.nativeEvent.coordinate })} */}
+          </MapView.Marker >)
+
+        this.setState({
+          TSSSMarker: this.tsssmarkers
+        });
+        let id = this.state.tsss_id + 1
+        this.setState({
+          tsss_id: id
+        });
+      }
+    });
+  }
 
   TSTDOnPress() {
     this.setState({
@@ -123,7 +155,7 @@ export default class MapScreen extends React.Component {
       <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
         <MapView style={styles.map} showsUserLocation={true} provider={PROVIDER_GOOGLE} region={this.state.region}>
           {this.state.TSTDMarker}
-
+          {this.state.TSSSMarker.map(marker => (marker))}
         </MapView>
 
         <View style={styles.containerButtons}>
@@ -134,7 +166,6 @@ export default class MapScreen extends React.Component {
               onPress={this.createTSTD}
               title="TĐ" />
           </View>
-
           <View style={styles.Buttons}>
             <Button
               titleStyle={{ fontWeight: 'bold', fontSize: 30 }}
@@ -144,106 +175,148 @@ export default class MapScreen extends React.Component {
           </View>
         </View>
 
-        <Overlay
+        <TaiSanTDSS
+          title="TÀI SẢN THẨM ĐỊNH"
           isVisible={this.state.TSTDOverlayVisible}
-          width='60%'
-          height="60%">
-          <ScrollView>
-            <View style={{ alignItems: 'center', paddingBottom: 10 }}>
-              <Text style={{ fontWeight: 'bold', fontSize: 15 }}>TÀI SẢN THẨM ĐỊNH</Text>
-            </View>
-            <View style={styles.ViewTextInputStyle}>
-              <Text>Diện Tích:</Text>
-              <View style={styles.TextInputStyleUnderline}>
-                <TextInput
-                  onChangeText={(text) => this.setState({ TSTDInputValuesArea: text })}
-                  value={this.state.TSTDInputValuesArea}
-                  placeholder='Nhập diện tích'
-                  style={styles.TextInputStyle}
-                />
-              </View>
-            </View>
-            <View style={styles.ViewTextInputStyle}>
-              <Text>Vị trí:</Text>
-              <View style={styles.TextInputStyleUnderline}>
-                <TextInput
-                  onChangeText={(text) => this.setState({ TSTDInputValuesLocation: text })}
-                  value={this.state.TSTDInputValuesLocation}
-                  placeholder='Nhập vị trí'
-                  style={styles.TextInputStyle}
-                />
-              </View>
-            </View>
-            <View style={styles.ViewTextInputStyle}>
-              <Text>Mặt tiền:</Text>
-              <View style={styles.TextInputStyleUnderline}>
-                <TextInput
-                  onChangeText={(text) => this.setState({ TSTDInputValuesFacade: text })}
-                  value={this.state.TSTDInputValuesFacade}
-                  placeholder='Nhập mặt tiền'
-                  style={styles.TextInputStyle}
-                />
-              </View>
-            </View>
-            <View style={styles.ViewTextInputStyle}>
-              <Text>Chiều sâu:</Text>
-              <View style={styles.TextInputStyleUnderline}>
-                <TextInput
-                  onChangeText={(text) => this.setState({ TSTDInputValuesLengh: text })}
-                  value={this.state.TSTDInputValuesLengh}
-                  placeholder='Nhập chiều sâu'
-                  style={styles.TextInputStyle}
-                />
-              </View>
-            </View>
-            <View style={styles.ViewTextInputStyle}>
-              <Text>Pháp lý:</Text>
-              <View style={styles.TextInputStyleUnderline}>
-                <TextInput
-                  onChangeText={(text) => this.setState({ TSTDInputValuesLegal: text })}
-                  value={this.state.TSTDInputValuesLegal}
-                  placeholder='Nhập pháp lý'
-                  style={styles.TextInputStyle}
-                />
-              </View>
-            </View>
-            <View style={styles.ViewTextInputStyle}>
-              <Text>Giao thông:</Text>
-              <View style={styles.TextInputStyleUnderline}>
-                <TextInput
-                  onChangeText={(text) => this.setState({ TSTDInputValuesRoad: text })}
-                  value={this.state.TSTDInputValuesRoad}
-                  placeholder='Nhập giao thông'
-                  style={styles.TextInputStyle}
-                />
-              </View>
-            </View>
-
-            <View style={styles.CancelOKButton}>
-              <View style={{ paddingLeft: 12 }}>
-                <Button
-                  titleStyle={{ fontSize: 12 }}
-                  title="Thoát Ra"
-                  onPress={this.CancelTSTDOnPress}
-                >
-                </Button>
-              </View>
-              <View style={{ paddingLeft: 15 }}>
-                <Button
-                  titleStyle={{ fontSize: 12 }}
-                  title="Lưu Lại"
-                  onPress={this.SaveTSTDOnPress}
-                ></Button>
-              </View>
-            </View>
-            <Divider></Divider>
-            <Text style={{ paddingTop: 5, fontSize: 10, fontStyle: 'italic' }}>CHÚ Ý: Một vài chú ý hướng dẫn về cách nhập liệu sẽ được viết ở đây</Text>
-          </ScrollView>
-        </Overlay>
-
+          area={(text) => this.setState({ TSTDInputValuesArea: text })}
+          valArea={this.state.TSTDInputValuesArea}
+          location={(text) => this.setState({ TSTDInputValuesLocation: text })}
+          valLocation={this.state.TSTDInputValuesLocation}
+          facade={(text) => this.setState({ TSTDInputValuesFacade: text })}
+          valFacade={this.state.TSTDInputValuesFacade}
+          lengh={(text) => this.setState({ TSTDInputValuesLengh: text })}
+          valLengh={this.state.TSTDInputValuesLengh}
+          legal={(text) => this.setState({ TSTDInputValuesLegal: text })}
+          valLegal={this.state.TSTDInputValuesLegal}
+          road={(text) => this.setState({ TSTDInputValuesRoad: text })}
+          valRoad={this.state.TSTDInputValuesRoad}
+          tstdSaveOnPress={this.SaveTSTDOnPress}
+          tstdExitOnPress={this.CancelTSTDOnPress}
+          priceVisible={false}
+        >
+        </TaiSanTDSS>
       </KeyboardAvoidingView>
 
     );
+  }
+}
+
+class TaiSanTDSS extends React.Component {
+  constructor(props) {
+    super(props);
+  };
+  render() {
+    return (
+      <Overlay
+        isVisible={this.props.isVisible}
+        width='60%'
+        height="auto">
+        <ScrollView>
+          <View style={{ alignItems: 'center', paddingBottom: 10 }}>
+            <Text style={{ fontWeight: 'bold', fontSize: 15 }}>{this.props.title}</Text>
+          </View>
+          <View style={styles.ViewTextInputStyle}>
+            <Text>Giá bán:  </Text>
+            <View style={styles.TextInputStyleUnderline}>
+              <TextInput
+                editable={this.props.priceVisible}
+                onChangeText={this.props.price}
+                value={this.props.valPrice}
+                placeholder={this.props.priceVisible ? 'Nhập giá bán' : 'Đã bị khóa'}
+                style={styles.TextInputStyle}
+              />
+            </View>
+          </View>
+
+          <View style={styles.ViewTextInputStyle}>
+            <Text>Diện Tích:  </Text>
+            <View style={styles.TextInputStyleUnderline}>
+              <TextInput
+                onChangeText={this.props.area}
+                value={this.props.valArea}
+                placeholder='Nhập diện tích'
+                style={styles.TextInputStyle}
+              />
+            </View>
+          </View>
+          <View style={styles.ViewTextInputStyle}>
+            <Text>Vị trí:  </Text>
+            <View style={styles.TextInputStyleUnderline}>
+              <TextInput
+                onChangeText={this.props.location}
+                value={this.props.valLocation}
+                placeholder='Nhập vị trí'
+                style={styles.TextInputStyle}
+              />
+            </View>
+          </View>
+          <View style={styles.ViewTextInputStyle}>
+            <Text>Mặt tiền:  </Text>
+            <View style={styles.TextInputStyleUnderline}>
+              <TextInput
+                onChangeText={this.props.facade}
+                value={this.props.valFacade}
+                placeholder='Nhập mặt tiền'
+                style={styles.TextInputStyle}
+              />
+            </View>
+          </View>
+          <View style={styles.ViewTextInputStyle}>
+            <Text>Chiều sâu:  </Text>
+            <View style={styles.TextInputStyleUnderline}>
+              <TextInput
+                onChangeText={this.props.lengh}
+                value={this.props.valLengh}
+                placeholder='Nhập chiều sâu'
+                style={styles.TextInputStyle}
+              />
+            </View>
+          </View>
+          <View style={styles.ViewTextInputStyle}>
+            <Text>Pháp lý:  </Text>
+            <View style={styles.TextInputStyleUnderline}>
+              <TextInput
+                onChangeText={this.props.legal}
+                value={this.props.valLegal}
+                placeholder='Nhập pháp lý'
+                style={styles.TextInputStyle}
+              />
+            </View>
+          </View>
+          <View style={styles.ViewTextInputStyle}>
+            <Text>Giao thông:  </Text>
+            <View style={styles.TextInputStyleUnderline}>
+              <TextInput
+                onChangeText={this.props.road}
+                value={this.props.valRoad}
+                placeholder='Nhập giao thông'
+                style={styles.TextInputStyle}
+              />
+            </View>
+          </View>
+
+          <View style={styles.CancelOKButton}>
+            <View style={{ paddingLeft: 12 }}>
+              <Button
+                titleStyle={{ fontSize: 12 }}
+                title="Thoát Ra"
+                onPress={this.props.tstdExitOnPress}
+              >
+              </Button>
+            </View>
+            <View style={{ paddingLeft: 15 }}>
+              <Button
+                titleStyle={{ fontSize: 12 }}
+                title="Lưu Lại"
+                onPress={this.props.tstdSaveOnPress}
+              ></Button>
+            </View>
+          </View>
+          <Divider></Divider>
+          <Text style={{ paddingTop: 5, fontSize: 10, fontStyle: 'italic' }}>CHÚ Ý: Một vài chú ý hướng dẫn về cách nhập liệu sẽ được viết ở đây</Text>
+        </ScrollView>
+      </Overlay>
+    )
   }
 }
 
@@ -304,12 +377,16 @@ const styles = StyleSheet.create({
   TextInputStyleUnderline: {
     borderBottomWidth: 0.5,
     borderBottomColor: 'gray',
-    height: 20
+    height: 15,
+    alignSelf: 'stretch',
+    flex: 1
   },
   ViewTextInputStyle: {
-    paddingBottom: 10
+    paddingBottom: 15,
+    flexDirection: 'row'
   },
   TextInputStyle: {
-    height: 20
+    height: 15,
+    flex: 1
   }
 });
