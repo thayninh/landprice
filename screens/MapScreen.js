@@ -42,14 +42,14 @@ export default class MapScreen extends React.Component {
       TSTDInputValuesArea: null,
       TSTDInputValuesLocation: null,
       TSTDInputValuesFacade: null,
-      TSTDInputValuesLengh: null,
+      TSTDInputValueslength: null,
       TSTDInputValuesLegal: null,
       TSTDInputValuesRoad: null,
 
       TSSS1InputValuesArea: null,
       TSSS1InputValuesLocation: null,
       TSSS1InputValuesFacade: null,
-      TSSS1InputValuesLengh: null,
+      TSSS1InputValueslength: null,
       TSSS1InputValuesLegal: null,
       TSSS1InputValuesRoad: null,
       TSSS1InputValuesPrice: null,
@@ -57,7 +57,7 @@ export default class MapScreen extends React.Component {
       TSSS2InputValuesArea: null,
       TSSS2InputValuesLocation: null,
       TSSS2InputValuesFacade: null,
-      TSSS2InputValuesLengh: null,
+      TSSS2InputValueslength: null,
       TSSS2InputValuesLegal: null,
       TSSS2InputValuesRoad: null,
       TSSS2InputValuesPrice: null,
@@ -65,7 +65,7 @@ export default class MapScreen extends React.Component {
       TSSS3InputValuesArea: null,
       TSSS3InputValuesLocation: null,
       TSSS3InputValuesFacade: null,
-      TSSS3InputValuesLengh: null,
+      TSSS3InputValueslength: null,
       TSSS3InputValuesLegal: null,
       TSSS3InputValuesRoad: null,
       TSSS3InputValuesPrice: null,
@@ -123,7 +123,55 @@ export default class MapScreen extends React.Component {
 
   //calculatePrice funciton
   calculatePrice(tstdValues, tsssValues, tsss_id) {
-    return
+    //Area comparison
+    let TyLe_Area = (100 + (((Number(tstdValues.area) - Number(tsssValues.area)) / 5)));
+    let TyLeDieuChinh_Area = ((100 - TyLe_Area) / TyLe_Area) * 100;
+    let MucDieuChinh_Area = ((Number(tsssValues.price) * TyLeDieuChinh_Area) / 100);
+    console.log(TyLe_Area + " - " + TyLeDieuChinh_Area + " - " + MucDieuChinh_Area);
+    //Location comparison
+    let TyLe_Location = (100 - (Number(tstdValues.location) - Number(tsssValues.location)) / 0.1);
+    let TyLeDieuChinh_Location = ((100 - TyLe_Location) / TyLe_Location) * 100;
+    let MucDieuChinh_Location = ((Number(tsssValues.price) * TyLeDieuChinh_Location) / 100);
+    console.log(TyLe_Location + " - " + TyLeDieuChinh_Location + " - " + MucDieuChinh_Location);
+    //Facade comparison
+    let TyLe_Facade = (100 - ((Number(tstdValues.facade) - Number(tsssValues.facade)) / (Number(tstdValues.facade) * Number(tsssValues.facade))) * 100);
+    let TyLeDieuChinh_Facade = ((100 - TyLe_Facade) / TyLe_Facade) * 100;
+    let MucDieuChinh_Facade = ((Number(tsssValues.price) * TyLeDieuChinh_Facade) / 100);
+    console.log(TyLe_Facade + " - " + TyLeDieuChinh_Facade + " - " + MucDieuChinh_Facade);
+    //Length comparison
+    let TyLe_Length = (100 - ((Number(tstdValues.length) - Number(tsssValues.length)) / (Number(tstdValues.length) * Number(tsssValues.length))) * 100);
+    let TyLeDieuChinh_Length = ((100 - TyLe_Length) / TyLe_Length) * 100;
+    let MucDieuChinh_length = ((Number(tsssValues.price) * TyLeDieuChinh_Length) / 100);
+    console.log(TyLe_Length + " - " + TyLeDieuChinh_Length + " - " + MucDieuChinh_length);
+    //Road comparison
+    let TyLe_Road = (100 - (Number(tstdValues.road) - Number(tsssValues.road)) / 0.1);
+    let TyLeDieuChinh_Road = ((100 - TyLe_Road) / TyLe_Road) * 100;
+    let MucDieuChinh_Road = ((Number(tsssValues.price) * TyLeDieuChinh_Road) / 100);
+    console.log(TyLe_Road + " - " + TyLeDieuChinh_Road + " - " + MucDieuChinh_Road);
+    //Legal comparison
+    var TyLe_Legal = null;
+    if (Number(tstdValues.legal) - Number(tsssValues.legal) == 0) {
+      TyLe_Legal = 100;
+    } else if (Number(tstdValues.legal) - Number(tsssValues.legal) < 0) {
+      TyLe_Legal = 105;
+    } else {
+      TyLe_Legal = 95;
+    }
+    let TyLeDieuChinh_Legal = ((100 - TyLe_Legal) / TyLe_Legal) * 100;
+    let MucDieuChinh_Legal = ((Number(tsssValues.price) * TyLeDieuChinh_Legal) / 100);
+    console.log(TyLe_Legal + " - " + TyLeDieuChinh_Legal + " - " + MucDieuChinh_Legal);
+    //Calculate FinalPriceSS
+    let FinalPriceSS = Number(tsssValues.price) + MucDieuChinh_Area + MucDieuChinh_Location + MucDieuChinh_Facade + MucDieuChinh_length + MucDieuChinh_Road + MucDieuChinh_Legal
+    if (tsss_id == 1) {
+      this.setState({ FinalPriceSS1: FinalPriceSS });
+    } else if (tsss_id == 2) {
+      this.setState({ FinalPriceSS2: FinalPriceSS });
+    } else if (tsss_id == 3) {
+      this.setState({ FinalPriceSS3: FinalPriceSS });
+    }
+    console.log(tsss_id);
+    console.log(this.state.FinalPriceSS1 + ' + ' + this.state.FinalPriceSS2 + ' + ' + this.state.FinalPriceSS3);
+    console.log("======================================================================================");
   }
 
   //Connect database
@@ -171,7 +219,7 @@ export default class MapScreen extends React.Component {
       area: this.state.TSTDInputValuesArea,
       location: this.state.TSTDInputValuesLocation,
       facade: this.state.TSTDInputValuesFacade,
-      lengh: this.state.TSTDInputValuesLengh,
+      length: this.state.TSTDInputValueslength,
       legal: this.state.TSTDInputValuesLegal,
       road: this.state.TSTDInputValuesRoad
     }
@@ -232,7 +280,7 @@ export default class MapScreen extends React.Component {
       area: this.state.TSSS1InputValuesArea,
       location: this.state.TSSS1InputValuesLocation,
       facade: this.state.TSSS1InputValuesFacade,
-      lengh: this.state.TSSS1InputValuesLengh,
+      length: this.state.TSSS1InputValueslength,
       legal: this.state.TSSS1InputValuesLegal,
       road: this.state.TSSS1InputValuesRoad
     }
@@ -296,7 +344,7 @@ export default class MapScreen extends React.Component {
       area: this.state.TSSS2InputValuesArea,
       location: this.state.TSSS2InputValuesLocation,
       facade: this.state.TSSS2InputValuesFacade,
-      lengh: this.state.TSSS2InputValuesLengh,
+      length: this.state.TSSS2InputValueslength,
       legal: this.state.TSSS2InputValuesLegal,
       road: this.state.TSSS2InputValuesRoad
     }
@@ -360,7 +408,7 @@ export default class MapScreen extends React.Component {
       area: this.state.TSSS3InputValuesArea,
       location: this.state.TSSS3InputValuesLocation,
       facade: this.state.TSSS3InputValuesFacade,
-      lengh: this.state.TSSS3InputValuesLengh,
+      length: this.state.TSSS3InputValueslength,
       legal: this.state.TSSS3InputValuesLegal,
       road: this.state.TSSS3InputValuesRoad
     }
@@ -441,8 +489,8 @@ export default class MapScreen extends React.Component {
           valLocation={this.state.TSTDInputValuesLocation}
           facade={(text) => this.setState({ TSTDInputValuesFacade: text })}
           valFacade={this.state.TSTDInputValuesFacade}
-          lengh={(text) => this.setState({ TSTDInputValuesLengh: text })}
-          valLengh={this.state.TSTDInputValuesLengh}
+          length={(text) => this.setState({ TSTDInputValueslength: text })}
+          vallength={this.state.TSTDInputValueslength}
           legal={(text) => this.setState({ TSTDInputValuesLegal: text })}
           valLegal={this.state.TSTDInputValuesLegal}
           road={(text) => this.setState({ TSTDInputValuesRoad: text })}
@@ -461,8 +509,8 @@ export default class MapScreen extends React.Component {
           valLocation={this.state.TSSS1InputValuesLocation}
           facade={(text) => this.setState({ TSSS1InputValuesFacade: text })}
           valFacade={this.state.TSSS1InputValuesFacade}
-          lengh={(text) => this.setState({ TSSS1InputValuesLengh: text })}
-          valLengh={this.state.TSSS1InputValuesLengh}
+          length={(text) => this.setState({ TSSS1InputValueslength: text })}
+          vallength={this.state.TSSS1InputValueslength}
           legal={(text) => this.setState({ TSSS1InputValuesLegal: text })}
           valLegal={this.state.TSSS1InputValuesLegal}
           road={(text) => this.setState({ TSSS1InputValuesRoad: text })}
@@ -483,8 +531,8 @@ export default class MapScreen extends React.Component {
           valLocation={this.state.TSSS2InputValuesLocation}
           facade={(text) => this.setState({ TSSS2InputValuesFacade: text })}
           valFacade={this.state.TSSS2InputValuesFacade}
-          lengh={(text) => this.setState({ TSSS2InputValuesLengh: text })}
-          valLengh={this.state.TSSS2InputValuesLengh}
+          length={(text) => this.setState({ TSSS2InputValueslength: text })}
+          vallength={this.state.TSSS2InputValueslength}
           legal={(text) => this.setState({ TSSS2InputValuesLegal: text })}
           valLegal={this.state.TSSS2InputValuesLegal}
           road={(text) => this.setState({ TSSS2InputValuesRoad: text })}
@@ -505,8 +553,8 @@ export default class MapScreen extends React.Component {
           valLocation={this.state.TSSS3InputValuesLocation}
           facade={(text) => this.setState({ TSSS3InputValuesFacade: text })}
           valFacade={this.state.TSSS3InputValuesFacade}
-          lengh={(text) => this.setState({ TSSS3InputValuesLengh: text })}
-          valLengh={this.state.TSSS3InputValuesLengh}
+          length={(text) => this.setState({ TSSS3InputValueslength: text })}
+          vallength={this.state.TSSS3InputValueslength}
           legal={(text) => this.setState({ TSSS3InputValuesLegal: text })}
           valLegal={this.state.TSSS3InputValuesLegal}
           road={(text) => this.setState({ TSSS3InputValuesRoad: text })}
@@ -587,8 +635,8 @@ class TaiSanTDSS extends React.Component {
             <Text>Chiều sâu:  </Text>
             <View style={styles.TextInputStyleUnderline}>
               <TextInput
-                onChangeText={this.props.lengh}
-                value={this.props.valLengh}
+                onChangeText={this.props.length}
+                value={this.props.vallength}
                 placeholder='Nhập chiều sâu'
                 style={styles.TextInputStyle}
               />
