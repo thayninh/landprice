@@ -70,10 +70,19 @@ export default class MapScreen extends React.Component {
       TSSS3InputValuesRoad: null,
       TSSS3InputValuesPrice: null,
 
+      provinceValue: null,
+      districtValue: null,
+      communeValue: null,
+      mapNumber: null,
+      parcelNumber: null,
+      usernameValue: null,
+      passwordValue: null,
+
       TSTDOverlayVisible: false,
       TSSS1OverlayVisible: false,
       TSSS2OverlayVisible: false,
       TSSS3OverlayVisible: false,
+      UpdateOverlayVisible: false,
     };
 
     this.TSTDValuesObject = {};
@@ -102,7 +111,10 @@ export default class MapScreen extends React.Component {
     this.SaveTSSS3OnPress = this.SaveTSSS3OnPress.bind(this);
     this.CancelTSSS3OnPress = this.CancelTSSS3OnPress.bind(this);
 
-    this.calculatePrice = this.calculatePrice.bind(this)
+    this.calculatePrice = this.calculatePrice.bind(this);
+    this.connectDB = this.connectDB.bind(this);
+    this.SaveUpdateOnPress = this.SaveUpdateOnPress.bind(this);
+    this.CancelUpdateOnPress = this.CancelUpdateOnPress.bind(this);
   }
 
   componentDidMount() {
@@ -176,7 +188,19 @@ export default class MapScreen extends React.Component {
 
   //Connect database
   connectDB() {
-    return
+    this.setState({
+      UpdateOverlayVisible: true
+    });
+  }
+
+  SaveUpdateOnPress(){
+    console.log("ok save")
+  }
+
+  CancelUpdateOnPress(){
+    this.setState({
+      UpdateOverlayVisible: false
+    });
   }
 
 
@@ -565,9 +589,149 @@ export default class MapScreen extends React.Component {
           tstdSaveOnPress={this.SaveTSSS3OnPress}
           tstdExitOnPress={this.CancelTSSS3OnPress}>
         </TaiSanTDSS>
+
+        <UpdateDatabase
+          title="CẬP NHẬT GIÁ ĐẤT"
+          isVisible={this.state.UpdateOverlayVisible}
+          province={(text) => this.setState({ provinceValue: text })}
+          valProvince={this.state.provinceValue}
+          district={(text) => this.setState({ districtValue: text })}
+          valDistrict={this.state.districtValue}
+          commune={(text) => this.setState({ communeValue: text })}
+          valCommune={this.state.communeValue}
+          mapNumber={(text) => this.setState({ mapNumberValue: text })}
+          valMapNumber={this.state.mapNumberValue}
+          parcelNumber={(text) => this.setState({ parcelNumberValue: text })}
+          valParcelNumber={this.state.parcelNumberValue}
+          username={(text) => this.setState({ usernameValue: text })}
+          valUsername={this.state.usernameValue}
+          password={(text) => this.setState({ passwordValue: text })}
+          valPassword={this.state.passwordValue}
+          updateSaveOnPress={this.SaveUpdateOnPress}
+          updateExitOnPress={this.CancelUpdateOnPress}
+          >
+        </UpdateDatabase>
       </KeyboardAvoidingView>
 
     );
+  }
+}
+
+class UpdateDatabase extends React.Component {
+  constructor(props) {
+    super(props);
+  };
+  render() {
+    return (
+      <Overlay
+        isVisible={this.props.isVisible}
+        width='60%'
+        height="auto">
+        <ScrollView>
+          <View style={{ alignItems: 'center', paddingBottom: 10 }}>
+            <Text style={{ fontWeight: 'bold', fontSize: 15 }}>{this.props.title}</Text>
+          </View>
+          <View style={styles.ViewTextInputStyle}>
+            <Text>Tên Tỉnh:  </Text>
+            <View style={styles.TextInputStyleUnderline}>
+              <TextInput
+                onChangeText={this.props.province}
+                value={this.props.valProvince}
+                placeholder={'Nhập Tên Tỉnh'}
+                style={styles.TextInputStyle}
+              />
+            </View>
+          </View>
+          <View style={styles.ViewTextInputStyle}>
+            <Text>Tên Huyện:  </Text>
+            <View style={styles.TextInputStyleUnderline}>
+              <TextInput
+                onChangeText={this.props.district}
+                value={this.props.valdistrict}
+                placeholder='Nhập Tên Huyện'
+                style={styles.TextInputStyle}
+              />
+            </View>
+          </View>
+          <View style={styles.ViewTextInputStyle}>
+            <Text>Tên Xã:  </Text>
+            <View style={styles.TextInputStyleUnderline}>
+              <TextInput
+                onChangeText={this.props.commune}
+                value={this.props.valCommune}
+                placeholder='Nhập Tên Xã'
+                style={styles.TextInputStyle}
+              />
+            </View>
+          </View>
+          <View style={styles.ViewTextInputStyle}>
+            <Text>Số Tờ Bản Đồ:  </Text>
+            <View style={styles.TextInputStyleUnderline}>
+              <TextInput
+                onChangeText={this.props.mapNumber}
+                value={this.props.valMapNumber}
+                placeholder='Nhập Số Tờ Bản Đồ'
+                style={styles.TextInputStyle}
+              />
+            </View>
+          </View>
+          <View style={styles.ViewTextInputStyle}>
+            <Text>Số Hiệu Thửa:  </Text>
+            <View style={styles.TextInputStyleUnderline}>
+              <TextInput
+                onChangeText={this.props.parcelNumber}
+                value={this.props.valParcelNumber}
+                placeholder='Nhập Số Hiệu Thửa'
+                style={styles.TextInputStyle}
+              />
+            </View>
+          </View>
+          <View style={styles.ViewTextInputStyle}>
+            <Text>Tên Đăng Nhập:  </Text>
+            <View style={styles.TextInputStyleUnderline}>
+              <TextInput
+                onChangeText={this.props.username}
+                value={this.props.valUsername}
+                placeholder='Nhập Tên'
+                style={styles.TextInputStyle}
+              />
+            </View>
+          </View>
+          <View style={styles.ViewTextInputStyle}>
+            <Text>Mật Khẩu:  </Text>
+            <View style={styles.TextInputStyleUnderline}>
+              <TextInput
+                secureTextEntry={true}
+                onChangeText={this.props.password}
+                value={this.props.valPassword}
+                placeholder='Nhập Mật Khẩu'
+                style={styles.TextInputStyle}
+              />
+            </View>
+          </View>
+
+          <View style={styles.CancelOKButton}>
+            <View style={{ paddingLeft: 12 }}>
+              <Button
+                titleStyle={{ fontSize: 12 }}
+                title="Thoát Ra"
+                onPress={this.props.updateExitOnPress}
+              >
+              </Button>
+            </View>
+            <View style={{ paddingLeft: 15 }}>
+              <Button
+                titleStyle={{ fontSize: 12 }}
+                title="Lưu Lại"
+                onPress={this.props.updateSaveOnPress}
+              ></Button>
+            </View>
+          </View>
+          <Divider></Divider>
+          <Text style={{ paddingTop: 5, fontSize: 10, fontStyle: 'italic' }}>CHÚ Ý: Một vài chú ý hướng dẫn về cách nhập liệu sẽ được viết ở đây</Text>
+        </ScrollView>
+      </Overlay>
+    )
   }
 }
 
